@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Tabacaria OnLine - Cadastro de Categoria</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="css/modern-business.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="font-awesome-4.1.0/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<script src="jquery-1.10.2.min.js"></script>
+<script src="json.js"></script>
+<script type="text/javascript">
+      	host = "http://localhost:8080/tabacaria/services/";
+      	
+  		function listarCategorias() {  
+  			$.ajax({ 
+  				url : host + 'categorias',
+  				type : 'GET',
+  				 headers: {          
+  	                 Accept : 'application/json'   
+  	  			},    
+  				success : function(data) {
+  
+  					$('#grid tr:gt(0)').remove();
+  					if ($.isArray(data.categorias.link)) {
+  					   for ( var i = 0; i < data.categorias.link.length; i++) {
+  					      var link = data.categorias.link[i]['@href'];
+  					      segueLinkCategoria(link);
+  					   }
+  					} else {
+  					   var link = data.categorias.link['@href'];
+  					   segueLinkCategoria(link);
+  					}
+				
+  				},
+  				error: function(data) {
+  					alert("Erro na invocação");
+  				}
+  			});
+  		}      
+  		
+  		
+  		function segueLinkCategoria(link) {
+  		   $.ajax({
+  		      url : host + link,
+  		      type : 'GET',
+  		      success : function(data) {
+  		         adicionaCategoriaNovaAoGrid(data.categoria);
+  		      },
+  		      error : function(data) {
+  		         alert("Ocorreu um erro");
+  		      }
+  		   });
+  		}
+  		
+  		function adicionaCategoriaNovaAoGrid(categoria) {
+
+  		   var data = "<tr>"
+  		      + "<td>" + categoria.descricao + "</td>"
+  		      + "<td><input type=\"button\" value=\"Apagar\" "
+  		      + "onclick=\"apagaCategoria('" + categoria.descricao + "');\" /></td>" 
+  		      + "</tr>";
+
+  		   $("#grid").append(data);
+  		}
+  		
+  		function adicionaCategoria() {
+
+  			var data = $("#criarCategoriaForm").serializeJSON();
+  			data = "{\"categoria\":" + JSON.stringify(data) + "}";
+
+  			$.ajax({
+  			   url : host + 'categorias',
+  			   type : 'POST',
+  			   contentType : 'application/json',
+  			   data : data,
+  			   success : function(data) {
+  				  	alert("Incluído com sucesso!");
+  				  	$("#criarCategoriaForm")[0].reset();
+  					listarCategorias();
+  			   },
+  			   error : function(data) {
+  				 
+						console.log(data);
+						alert("Ocorreu um erro: " + data.status + " "
+								+ data.statusText);
+					
+  			   }
+  			 });
+  		}
+  		
+  		function apagaCategoria(id) {
+  			$.ajax({
+  						url : host + 'categorias/' + id,
+  						type : 'DELETE',
+  						success : function(data) {
+  							listarCategorias();
+  						},
+  						error : function(data) {
+  							console.log(data);
+  							alert("Ocorreu um erro: " + data.status + " "
+  									+ data.statusText);
+  						}
+  					});
+
+  		}
+  		
+      </script>
+
+</head>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="index.html">Tabacaria OnLine</a>
+			</div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="account.html">Minha Conta</a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown">Categorias <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="">Categoria 1</a></li>
+							<li><a href="">Categoria 2</a></li>
+							<li><a href="">Categoria 3</a></li>
+							<li><a href="">Categoria 4</a></li>
+							<li><a href="">Categoria 5</a></li>
+						</ul>
+					<li><a href="about.html">Sobre Nós</a></li>
+					<li><a href="contact.html">Contato</a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown">Administração <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="">Cadastro de Usuário</a></li>
+							<li><a href="">Cadastro de Produto</a></li>
+							<li><a href="">Cadastro de Unid. Med.</a></li>
+							<li><a href="category.html">Cadastro de Categoria</a></li>
+						</ul></li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container -->
+	</nav>
+
+	<!-- Page Content -->
+	<div class="container">
+		<br />
+		<fieldset>
+			<legend>Criar nova categoria</legend>
+			<form id="criarCategoriaForm">
+				<label>Descrição:</label> <input type="text" name="nome" />
+				<input type="button" value="Criar" onclick="adicionaCategoria();" />
+			</form>
+		</fieldset>
+		<br />
+		<fieldset>
+			<legend>Categorias</legend>
+			<table id="grid">
+				<tr>
+					<td colspan="5">Carregando...</td>
+				</tr>
+			</table>
+		</fieldset>
+
+		<script type="text/javascript">
+		listarCategorias();
+      </script>
+
+		<!-- Footer -->
+		<footer>
+			<div class="row">
+				<div class="col-lg-12">
+					<p>Copyright &copy; Tabacaria OnLine 2015</p>
+				</div>
+			</div>
+		</footer>
+
+	</div>
+	<!-- /.container -->
+
+	<!-- jQuery -->
+	<script src="js/jquery.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
