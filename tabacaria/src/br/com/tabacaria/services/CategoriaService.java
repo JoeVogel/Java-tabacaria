@@ -54,8 +54,8 @@ public class CategoriaService {
 	}
 
 	@GET
-	public Categorias listeTodasAsCategorias(@QueryParam("pagina") int pagina) {
-		List<Categoria> categorias = categoriaDao.listaPaginada(pagina, TAMANHO_PAGINA);
+	public Categorias listeTodasAsCategorias() {
+		List<Categoria> categorias = categoriaDao.listaTodos();
 		return new Categorias(categorias);
 	}
 

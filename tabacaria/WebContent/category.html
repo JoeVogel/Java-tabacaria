@@ -33,6 +33,30 @@
 <script type="text/javascript">
       	host = "http://localhost:8080/tabacaria/services/";
       	
+      	function adicionaCategoria() {
+
+  			var data = $("#nome").val();
+  			data = "{\"categoria\": {descricao: " + data + "}}";
+			alert(data);
+  			$.ajax({
+  			   url : host + 'categorias',
+  			   type : 'POST',
+  			   contentType : 'application/json',
+  			   data : data,
+  			   success : function(data) {
+  				  	alert("Incluído com sucesso!");
+  				  	$("#criarCategoriaForm")[0].reset();
+  					listarCategorias();
+  			   },
+  			   error : function(data) {
+  				 
+						console.log(data);
+						alert("Ocorreu um erro: " + data.status + " "
+								+ data.statusText);
+					
+  			   }
+  			 });
+  		}
   		function listarCategorias() {  
   			$.ajax({ 
   				url : host + 'categorias',
@@ -85,30 +109,7 @@
   		   $("#grid").append(data);
   		}
   		
-  		function adicionaCategoria() {
-
-  			var data = $("#criarCategoriaForm").serializeJSON();
-  			data = "{\"categoria\":" + JSON.stringify(data) + "}";
-
-  			$.ajax({
-  			   url : host + 'categorias',
-  			   type : 'POST',
-  			   contentType : 'application/json',
-  			   data : data,
-  			   success : function(data) {
-  				  	alert("Incluído com sucesso!");
-  				  	$("#criarCategoriaForm")[0].reset();
-  					listarCategorias();
-  			   },
-  			   error : function(data) {
-  				 
-						console.log(data);
-						alert("Ocorreu um erro: " + data.status + " "
-								+ data.statusText);
-					
-  			   }
-  			 });
-  		}
+  		
   		
   		function apagaCategoria(id) {
   			$.ajax({
@@ -125,6 +126,9 @@
   					});
 
   		}
+
+
+  		
   		
       </script>
 
@@ -182,8 +186,8 @@
 		<fieldset>
 			<legend>Criar nova categoria</legend>
 			<form id="criarCategoriaForm">
-				<label>Descrição:</label> <input type="text" name="nome" />
-				<input type="button" value="Criar" onclick="adicionaCategoria();" />
+				<label>Descrição:</label> <input type="text" id="nome" />
+				<input type="button" value="Criar" onclick="adicionaCategoria()" />
 			</form>
 		</fieldset>
 		<br />
@@ -191,14 +195,14 @@
 			<legend>Categorias</legend>
 			<table id="grid">
 				<tr>
-					<td colspan="5">Carregando...</td>
+					<script type="text/javascript">
+						listarCategorias();
+      				</script>
 				</tr>
 			</table>
 		</fieldset>
 
-		<script type="text/javascript">
-		listarCategorias();
-      </script>
+		
 
 		<!-- Footer -->
 		<footer>

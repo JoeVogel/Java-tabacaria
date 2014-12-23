@@ -1,6 +1,8 @@
 package br.com.tabacaria.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,6 +15,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 public class Categoria implements IBean{
 
+	@Id
+	@GeneratedValue
 	private Long id;
 	private String descricao;
 	
